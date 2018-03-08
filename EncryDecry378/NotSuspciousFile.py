@@ -24,6 +24,7 @@ for root, dirs, files in os.walk('.'):
         file_to_encrypt = curr_path + curr_folder + "\\" + files[i];
         #Get the extension of the file to encrypt
         split_string = file_to_encrypt.split('.');
+        encrypted_file_path = split_string[0];
         file_extension = split_string[len(split_string) - 1];
         
 def Myencrypt(message, key):

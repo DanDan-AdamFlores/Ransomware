@@ -30,26 +30,24 @@ for root, dirs, files in os.walk('.'):
         file_extension = split_string[len(split_string) - 1]
 
 ##########################################################
-# Using a generated IV and predetermined key, a file is encrypted using
-# AES-256 CBC
+# Using a generated IV and predetermined key, a file is 
+# encrypted using AES-256 CBC
 ##########################################################
 def MyEncrypt(file, key):
     #Return an error if the key length is not length 32
-    if(len(key) != 32) :
+    if(len(key) != ENC_DEC_KEY_LENGTH) :
         raise ValueError('Key length must be of size 32')
     #Generate an IV of length 16
     IV = generateRandom(IV_KEY_LENGTH)
-    #Encrypt the message using the key and IV in CBC mode in AES
-    backend = default_backend()
-    cipher = Cipher(algorithms.AES(key), modes.CBC(IV), backend=backend)
+    cipher = createCipher(IV, key)
     encryptor = cipher.encryptor()
     cipher_text = encryptor.update(file) + encryptor.finalize()
         
     return cipher_text, IV
 
 ##########################################################
-# Using a 32-bit generated key, a file will be read into Myencrypt to be
-# encrypted, then stored into a JSON file.
+# Using a 32-bit generated key, a file will be read into 
+# Myencrypt to be encrypted, then stored into a JSON file.
 ##########################################################
 def MyfileEncrypt(file_path):
     key = generateRandom(ENC_DEC_KEY_LENGTH)
@@ -59,11 +57,16 @@ def MyfileEncrypt(file_path):
 
     pass
 
-# Can probably just be an if statement in MyEncrypt
-def MyDecrypt():
-    #decryptor = cipher.decryptor()
-    #decryptor.update(ct) + decryptor.finalize() 
-    pass
+##########################################################
+# 
+##########################################################
+def MyDecrypt(cipher_text, key, iv):
+    if(len(key) != ENC_DEC_KEY_LENGTH and len(iv) != IV_KEY_LENGTH) :
+        raise ValueError('Key/IV length is mismatched.')
+    cipher = createCipher(iv, key)
+    decryptor = cipher.decryptor()
+    decryptor.update(cipher_text) + decryptor.finalize() 
+    return 
 
 def MyfileDecrypt():
     pass
@@ -79,4 +82,15 @@ def decodeFile(file_path):
 def generateRandom(key_length):
     #Idk if this is the right way to generate it
     return os.urandom(key_length)
+
+##########################################################
+#   Generates magic box to encrypt and decrypt files
+##########################################################
+def createCipher(iv, key):
+    if(len(key) != 32) :
+        raise ValueError('Key length must be of size 32')
+    #Encrypt the message using the key and IV in CBC mode in AES
+    backend = default_backend()
+    cipher = Cipher(algorithms.AES(key), modes.CBC(iv), backend=backend)
+    return cipher
         

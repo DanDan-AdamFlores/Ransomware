@@ -21,7 +21,7 @@ def MyEncrypt(file, key):
     cipher = createCipher(IV, key)
     encryptor = cipher.encryptor()
     #pad file to meet requirements
-    padded_file = padFile(file)
+    #padded_file = padFile(file)
     cipher_text = encryptor.update(padded_file) + encryptor.finalize()
         
     return cipher_text, IV
@@ -33,6 +33,8 @@ def MyEncrypt(file, key):
 def MyfileEncrypt(file_path):
     #Generates 32-bit key
     key = generateRandom(const.ENC_DEC_KEY_LENGTH)
+    # Can/Should the file be padded before encoding it?
+    #padded_file = padFile(file)
     #Generate the encoded version of the file
     file = encodeFile(file_path)
     #Encrypt the above file
@@ -46,7 +48,8 @@ def MyfileEncrypt(file_path):
     return cipher_text, IV, key, file_extension
 
 ##########################################################
-# 
+# Given an AES-256 Cipher Text,key, and iv; a cipher text 
+# is decrypted.
 ##########################################################
 def MyDecrypt(cipher_text, key, iv):
     if(len(key) != const.ENC_DEC_KEY_LENGTH and len(iv) != const.IV_KEY_LENGTH) :
@@ -65,6 +68,10 @@ def encodeFile(file_path):
         encoded_string = base64.b64encode(file.read())
     return encoded_string
 
+##########################################################
+# A given file is padded into 128-bit blocks so that it 
+# be ecrypted.
+##########################################################
 def padFile(file):
     padder = padding.PKCS7(128).padder()
     pddFile = padder.update(file)

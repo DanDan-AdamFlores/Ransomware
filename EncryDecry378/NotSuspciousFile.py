@@ -36,7 +36,7 @@ def MyfileEncrypt(file_path):
     cipher_text, IV = MyEncrypt(file, key)
     #Extract the file enxtension
     split_string = file_path.split('.')
-    file_extension = split_string[len(split_string) - 1]
+    file_extension = '.' + split_string[len(split_string) - 1]
     
     #Return the generated cipher text, 16-bit IV, 32-bit Key, and the
     #File extension
@@ -63,14 +63,14 @@ def encodeFile(file_path):
     return encoded_string
         
 
-def decode(item_list):
+def stringify(item_list):
     #Holds all of the decoded items
-    decoded_items = list()
+    stringified_items = list()
     
     for i in range(len(item_list)):
-        decoded_items.append(base64.b64decode(item_list[i]));
+        stringified_items.append(str(item_list[i]));
     
-    return decoded_items[0], decoded_items[1], decoded_items[2]
+    return stringified_items[0], stringified_items[1], stringified_items[2]
 
 def generateRandom(key_length):
     #Idk if this is the right way to generate it
@@ -111,9 +111,10 @@ if __name__ == '__main__':
             file_path = curr_path + curr_folder + "\\" + files[i]
             #Generate cipher text, IV, Key, and file extension
             cipher_text, IV, key, ext = MyfileEncrypt(file_path);
-            cipher_text, IV, key = decode(list([cipher_text, IV, key]))
+            cipher_text, IV, key = stringify(list([cipher_text, IV, key]))
             #Generate map
             item_map = {'c' : cipher_text, 'IV' : IV, 'key' : key, 'ext' : ext}
             #Generate Json
             dump = json.dumps(item_map)
+            
             

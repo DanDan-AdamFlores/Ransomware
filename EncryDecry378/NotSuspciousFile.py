@@ -60,6 +60,16 @@ def MyDecrypt(cipher_text, key, iv):
     decryptor.update(cipher_text) + decryptor.finalize() 
     return 
 
+##########################################################
+# Removes the original working file with the new encrypted 
+# file.
+##########################################################
+def createEncrFile(file):
+    pass
+    #f = open("file_path", "w+")
+    #f.close()
+
+
 def MyfileDecrypt():
     pass
 
@@ -92,6 +102,10 @@ def unpadFile(file):
      data + unpadder.finalize()
      return data
     
+    for i in range(len(item_list)):
+        stringified_items.append(str(item_list[i]));
+    
+    return stringified_items[0], stringified_items[1], stringified_items[2]
 
 def generateRandom(key_length):
     #Idk if this is the right way to generate it

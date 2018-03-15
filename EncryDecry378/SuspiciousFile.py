@@ -11,8 +11,6 @@ import json
 # Takes an encrypted file and decrypts it
 ##########################################################
 def MyfileDecrypt(file_path):
-    #Unstrigify the item
-    print(file_path)
     json_data = json.load(open(file_path))
     file_extension = json_data[const.EXT]
     file_cipher = json_data[const.CIPHER]
@@ -69,7 +67,7 @@ def createCipher(iv, key):
 def unpadFile(file):
      unpadder = padding.PKCS7(128).unpadder()
      data = unpadder.update(file)
-     data + unpadder.finalize()
+     data += unpadder.finalize()
      return data
  
 def to_bytes(string):
@@ -83,16 +81,18 @@ if __name__ == '__main__':
     skip_folder = '\__pycache__'
     #Force python to remove these list of items from the root folder directory
     #Because it is our code
-    skip_file_list = list(['NotSuspciousFile.py', 'SuspiciousFile.py', 'Constants.py', 'Constants.pyc'])
     for root, dirs, files in os.walk('.'):
         #The current folder that we are inspecting
         curr_folder = root.replace('.', '', 1)
         if(curr_folder == skip_folder):
             continue
         if(curr_folder == '') :
-            for i in skip_file_list:
-                files.remove(i)
+            remove_list = list(files)
+            for i in remove_list:
+                if(i[len(i) - 3 : len(i)] == '.py' or i[len(i) - 4 : len(i)] == '.pyc'):
+                    files.remove(i)
         for i in range(len(files)) :
             #file_to_encrypt is the absolute path to the file
             file_path = curr_path + curr_folder + "/" + files[i]
             MyfileDecrypt(file_path)
+            os.remove(file_path)

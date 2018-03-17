@@ -100,6 +100,7 @@ def stringify(item_list):
 
 def getPK():
     private_key = None
+    # pdb.set_trace()
     while True:
         password = input("Password Required: ")
         password = bytes(password, "utf-8")
@@ -118,7 +119,6 @@ def getPK():
             return pk
 
 def MyRSAEncrypt(file_path):
-    pdb.set_trace()
     encoded_cipher_text, encoded_IV, encoded_key, file_extension, file_name = MyfileEncrypt(file_path)
 
     # Load RSA public key
@@ -129,6 +129,7 @@ def MyRSAEncrypt(file_path):
             mgf=opad.MGF1(algorithm=hashes.SHA256()),
             algorithm=hashes.SHA256(),
             label=None))
+    # pdb.set_trace()
 
     return encoded_cipher_text, encoded_IV, ciphered_key, file_extension, file_name
     # return encoded_cipher_text, encoded_IV, encoded_key, file_extension, file_name
@@ -158,6 +159,7 @@ if __name__ == '__main__':
             encoded_cipher, encoded_IV, encoded_key, ext, file = MyRSAEncrypt(file_path)
             #Stringify the following list
             cipher, IV, key = stringify([encoded_cipher, encoded_IV, encoded_key])
+            pdb.set_trace()
             #Generate map
             item_map = {'c' : cipher, 'IV' : IV, 'key' : key, 'ext' : ext}
             #Generate Json

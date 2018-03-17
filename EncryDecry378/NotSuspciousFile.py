@@ -104,11 +104,14 @@ def getPK():
         password = input("Password Required: ")
         password = bytes(password, "utf-8")
         # Retrieves Crypto-Key Object from PEM file
-        with open("aliKey.pem", "rb") as key_file:
-                private_key = serialization.load_pem_private_key(
-                    key_file.read(),
-                    password=password,
-                    backend=default_backend())
+        try:
+            with open("aliKey.pem", "rb") as key_file:
+                    private_key = serialization.load_pem_private_key(
+                        key_file.read(),
+                        password=password,
+                        backend=default_backend())
+        except:
+            print("error")
         # Retrieve public key from Crypto-Key Object
         if private_key != None:
             pk = private_key.public_key()

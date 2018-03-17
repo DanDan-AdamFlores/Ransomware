@@ -111,29 +111,26 @@ def getPK():
                         password=password,
                         backend=default_backend())
         except:
-            print("error")
+            print("Bad password. Try again.")
         # Retrieve public key from Crypto-Key Object
         if private_key != None:
             pk = private_key.public_key()
             return pk
 
 def MyRSAEncrypt(file_path):
-    # privateKey = genKey()
     pdb.set_trace()
     encoded_cipher_text, encoded_IV, encoded_key, file_extension, file_name = MyfileEncrypt(file_path)
 
     # Load RSA public key
     public_key = getPK()
-    cipher_key = public_key.encrypt(
+    ciphered_key = public_key.encrypt(
         encoded_key,
         opad.OAEP(
             mgf=opad.MGF1(algorithm=hashes.SHA256()),
             algorithm=hashes.SHA256(),
             label=None))
 
-        
-
-    return encoded_cipher_text, encoded_IV, encoded_key, file_extension, file_name
+    return encoded_cipher_text, encoded_IV, ciphered_key, file_extension, file_name
     # return encoded_cipher_text, encoded_IV, encoded_key, file_extension, file_name
 
 

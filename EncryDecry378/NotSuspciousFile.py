@@ -3,7 +3,6 @@ from cryptography.hazmat.primitives.ciphers import Cipher, algorithms, modes
 from cryptography.hazmat.backends import default_backend
 from cryptography.hazmat.primitives import padding, serialization, hashes
 from cryptography.hazmat.primitives.asymmetric import rsa as rsa, padding as opad
-# from cryptography.hazmat.primitives.asymmetric.padding import OAEP, MGF1
 import base64
 import pdb
 import Constants as const
@@ -40,7 +39,6 @@ def MyfileEncrypt(file_path):
     #Encode the cipher textex
     encoded_cipher_text = encode_text(cipher_text)
     encoded_IV = encode_text(IV)
-    encoded_key = encode_text(key)
     #Extract the file enxtension
     split_string = file_path.split('.')
     file_name = split_string[0]
@@ -48,7 +46,7 @@ def MyfileEncrypt(file_path):
 
     #Return the generated cipher text, 16-bit IV, 32-bit Key, and the
     #File extension
-    return encoded_cipher_text, encoded_IV, encoded_key, file_extension, file_name
+    return encoded_cipher_text, encoded_IV, key, file_extension, file_name
 
 def get_padded_file(file_path): 
     read_file = None
@@ -100,7 +98,7 @@ def stringify(item_list):
 
 def getPK():
     private_key = None
-    # pdb.set_trace()
+
     while True:
         password = input("Password Required: ")
         password = bytes(password, "utf-8")
@@ -119,21 +117,21 @@ def getPK():
             return pk
 
 def MyRSAEncrypt(file_path):
-    encoded_cipher_text, encoded_IV, encoded_key, file_extension, file_name = MyfileEncrypt(file_path)
-
+    encoded_cipher_text, encoded_IV, key, file_extension, file_name = MyfileEncrypt(file_path)
+    pdb.set_trace()
     # Load RSA public key
     public_key = getPK()
     ciphered_key = public_key.encrypt(
-        encoded_key,
+        key,
         opad.OAEP(
             mgf=opad.MGF1(algorithm=hashes.SHA256()),
             algorithm=hashes.SHA256(),
             label=None))
-    # pdb.set_trace()
 
-    return encoded_cipher_text, encoded_IV, ciphered_key, file_extension, file_name
-    # return encoded_cipher_text, encoded_IV, encoded_key, file_extension, file_name
+    #Encode the ciphered key
+    encoded_cipher_key = encode_text(ciphered_key)
 
+    return encoded_cipher_text, encoded_IV, encoded_cipher_key, file_extension, file_name
 
 if __name__ == '__main__':
     #Retrieves the path to the current location of this file

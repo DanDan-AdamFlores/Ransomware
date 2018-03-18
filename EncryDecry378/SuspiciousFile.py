@@ -1,7 +1,8 @@
 import os
 from cryptography.hazmat.primitives.ciphers import Cipher, algorithms, modes
 from cryptography.hazmat.backends import default_backend
-from cryptography.hazmat.primitives import padding
+from cryptography.hazmat.primitives import padding, serialization, hashes
+from cryptography.hazmat.primitives.asymmetric import rsa, padding as opad
 import base64
 import pdb
 import Constants as const
@@ -27,17 +28,8 @@ def MyfileDecrypt(file_path):
     IV = base64.b64decode(IV)
     key = base64.b64decode(key)
     
-    #Run my decrypt to decrypt the file and return the decrypted file
-    contents = MyDecrypt(file_cipher, key, IV)
-    
-    split_string = file_path.split('.')
-    file_name = split_string[0]
-    
-    f = open(file_name + file_extension, "wb+")
-    f.write(contents)
-    
-    return 
-    
+    return file_cipher, IV, key, file_extension
+
 
 ##########################################################
 # Given an AES-256 Cipher Text,key, and iv; a cipher text 
@@ -53,6 +45,48 @@ def MyDecrypt(cipher_text, key, iv):
     
     return file
 
+def MyRSADecrypt(file_path, RSA_PublicKey_filepath):
+    #Retrieve items from the file path specified
+    file_cipher, IV, key, file_extension = MyfileDecrypt(file_path)
+    
+    crypto = get_crypto()
+    
+    key = crypto.decrypt(
+            key,
+            opad.OAEP(
+                    mgf=opad.MGF1(algorithm=hashes.SHA256()),
+                    algorithm=hashes.SHA256(),
+                    label=None))
+    
+    #Run my decrypt to decrypt the file and return the decrypted file
+    contents = MyDecrypt(file_cipher, key, IV)
+    
+    split_string = file_path.split('.')
+    file_name = split_string[0]
+    
+    f = open(file_name + file_extension, "wb+")
+    f.write(contents)
+    
+    return
+
+def get_crypto():
+    crypto = None
+    while True:
+        password = input("Password Required: ")
+        password = bytes('penguinflower', 'utf-8')
+        #Retrieves Crypto-Key object from PEM file
+        try:
+            with open("aliKey.pem", "rb") as key_file:
+                crypto = serialization.load_pem_private_key(
+                        key_file.read(),
+                        password=password,
+                        backend=default_backend())
+        except:
+            print("Wrong Password")
+        #Retrieve public key from Crypto-Key object
+        if crypto != None:
+            return crypto
+    
 ##########################################################
 #   Generates magic box to encrypt and decrypt files
 ##########################################################
@@ -89,10 +123,11 @@ if __name__ == '__main__':
         if(curr_folder == '') :
             remove_list = list(files)
             for i in remove_list:
-                if(i[len(i) - 3 : len(i)] == '.py' or i[len(i) - 4 : len(i)] == '.pyc'):
+                if(i[len(i) - 3 : len(i)] == '.py' or i[len(i) - 4 : len(i)] == '.pyc' or i[len(i) - 4 : len(i)] == '.pem'):
                     files.remove(i)
         for i in range(len(files)) :
             #file_to_encrypt is the absolute path to the file
             file_path = curr_path + curr_folder + "/" + files[i]
-            MyfileDecrypt(file_path)
+            pdb.set_trace()
+            MyRSADecrypt(file_path, "alikey.pem")
             os.remove(file_path)

@@ -16,19 +16,18 @@ def MyfileDecrypt(file_path):
     file_extension = json_data[const.EXT]
     file_cipher = json_data[const.CIPHER]
     IV = json_data[const.IV]
-    key = json_data[const.KEY]
-    
+    keys = json_data[const.KEY]
+    # pdb.set_trace
     #Byte-ify the following
     file_cipher = to_bytes(file_cipher)
     IV = to_bytes(IV)
-    key = to_bytes(key)
-    
+    keys = to_bytes(keys)
     #Decode the bytes
     file_cipher = base64.b64decode(file_cipher)
     IV = base64.b64decode(IV)
-    key = base64.b64decode(key)
+    keys = base64.b64decode(keys)
     
-    return file_cipher, IV, key, file_extension
+    return file_cipher, IV, keys, file_extension
 
 
 ############################################################################
@@ -60,7 +59,9 @@ def MyRSADecrypt(file_path, RSA_PublicKey_filepath):
                     mgf=opad.MGF1(algorithm=hashes.SHA256()),
                     algorithm=hashes.SHA256(),
                     label=None))
-    
+    hmac = key[32:64]
+    key = key[:32]
+
     #Run my decrypt to decrypt the file and return the decrypted file
     contents = MyDecrypt(file_cipher, key, IV)
     
@@ -120,3 +121,9 @@ def unpadFile(file):
 def to_bytes(string):
     byte_string = string[2 : len(string) - 1]
     return bytes(byte_string, 'utf-8')
+
+#############################################################################
+# Parse HMAC key from stored key
+#############################################################################
+def getHMAC(IV):
+    pass

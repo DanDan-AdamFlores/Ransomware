@@ -5,7 +5,7 @@ if __name__ == '__main__':
     #Retrieves the path to the current location of this file
     curr_path = os.getcwd()
     #Force python to skip the python cache folder
-    skip_folder = '\__pycache__'
+    skip_folder = '/__pycache__'
     #Force python to remove these list of items from the root folder directory
     #Because it is our code
     for root, dirs, files in os.walk('.'):

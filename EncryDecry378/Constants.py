@@ -14,3 +14,5 @@ CIPHER = 'c'
 IV = 'IV'
 #Index value for retrieving key from Json variable
 KEY = 'key'
+#HMAC key length, 256 bits of security
+HASH_KEY_LENGTH = 32

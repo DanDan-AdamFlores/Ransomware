@@ -1,7 +1,7 @@
 import os
 from cryptography.hazmat.primitives.ciphers import Cipher, algorithms, modes
 from cryptography.hazmat.backends import default_backend
-from cryptography.hazmat.primitives import padding, serialization, hashes
+from cryptography.hazmat.primitives import padding, serialization, hashes, hmac
 from cryptography.hazmat.primitives.asymmetric import rsa, padding as opad
 import base64
 import pdb
@@ -17,6 +17,7 @@ def MyfileDecrypt(file_path):
     file_cipher = json_data[const.CIPHER]
     IV = json_data[const.IV]
     keys = json_data[const.KEY]
+    tag = json_data[const.TAG]
     # pdb.set_trace
     #Byte-ify the following
     file_cipher = to_bytes(file_cipher)
@@ -27,7 +28,7 @@ def MyfileDecrypt(file_path):
     IV = base64.b64decode(IV)
     keys = base64.b64decode(keys)
     
-    return file_cipher, IV, keys, file_extension
+    return file_cipher, IV, keys, file_extension, tag
 
 
 ############################################################################
@@ -49,7 +50,7 @@ def MyDecrypt(cipher_text, key, iv):
 #############################################################################
 def MyRSADecrypt(file_path, RSA_PublicKey_filepath):
     #Retrieve items from the file path specified
-    file_cipher, IV, key, file_extension = MyfileDecrypt(file_path)
+    file_cipher, IV, key, file_extension, tag = MyfileDecrypt(file_path)
     
     crypto = get_crypto()
     
@@ -59,12 +60,12 @@ def MyRSADecrypt(file_path, RSA_PublicKey_filepath):
                     mgf=opad.MGF1(algorithm=hashes.SHA256()),
                     algorithm=hashes.SHA256(),
                     label=None))
-    hmac = key[32:64]
-    key = key[:32]
-
+    HMAC, key = getHMAC(key)
     #Run my decrypt to decrypt the file and return the decrypted file
-    contents = MyDecrypt(file_cipher, key, IV)
-    
+    if(isValidFile(file_cipher, HMAC, tag)):
+        contents = MyDecrypt(file_cipher, key, IV)
+    else:
+        raise ValueError('Tag or File is not intact. Dumping Package.')
     split_string = file_path.split('.')
     file_name = split_string[0]
     
@@ -125,5 +126,21 @@ def to_bytes(string):
 #############################################################################
 # Parse HMAC key from stored key
 #############################################################################
-def getHMAC(IV):
-    pass
+def getHMAC(key):
+    hmac = key[32:64]
+    key = key[:32]
+    return hmac, key
+
+def isValidFile(cipher_text, HMACKey, tag):
+    h = hmac.HMAC(HMACKey, algorithm=hashes.SHA256(), backend=default_backend())
+    h.update(cipher_text)
+    hTag = h.finalize()
+    pdb.set_trace()
+    tag = bytes(tag, 'utf-8')
+    tag = to_bytes(tag)
+    tag = tag.split("\\")
+     
+
+    if(hTag==tag):
+        return True
+    return False

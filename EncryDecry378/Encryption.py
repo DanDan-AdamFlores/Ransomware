@@ -32,7 +32,7 @@ def MyEncryptMAC(file, key, HMACKey):
     h = hmac.HMAC(HMACKey, algorithm=hashes.SHA256(), backend=default_backend())
     h.update(cipher_text)
     tag = h.finalize()
-    
+
     #Return the encrypted message, the IV, and the HMAC tag
     return cipher_text, IV, tag
 
@@ -54,7 +54,8 @@ def MyfileEncryptMAC(file_path):
     #Encode the cipher text
     encoded_cipher_text = encode_text(cipher_text)
     encoded_IV = encode_text(IV)
-    
+    encoded_tag = encode_text(tag)
+
     #Extract the file enxtension from the file path
     split_string = file_path.split('.')
     file_name = split_string[0]
@@ -62,13 +63,13 @@ def MyfileEncryptMAC(file_path):
 
     #Return the generated cipher text, 16-bit IV, 32-bit Key, and the
     #File extension
-    return encoded_cipher_text, encoded_IV, encKey, file_extension, file_name, HMACKey, tag
+    return encoded_cipher_text, encoded_IV, encKey, file_extension, file_name, HMACKey, encoded_tag
 
 ############################################################################
 #   Encrypts the Key and HMACKey using RSA
 ############################################################################
 def MyRSAEncrypt(file_path):
-    encoded_cipher_text, encoded_IV, encKey, file_extension, file_name, HMACKey, tag = MyfileEncryptMAC(file_path)
+    encoded_cipher_text, encoded_IV, encKey, file_extension, file_name, HMACKey, encoded_tag = MyfileEncryptMAC(file_path)
     # Load RSA public key
     public_key = getPK()
     
@@ -84,7 +85,7 @@ def MyRSAEncrypt(file_path):
     #Encode the ciphered key
     encoded_cipher_key = encode_text(ciphered_key)
 
-    return encoded_cipher_text, encoded_IV, encoded_cipher_key, file_extension, file_name, tag
+    return encoded_cipher_text, encoded_IV, encoded_cipher_key, file_extension, file_name, encoded_tag
 
 ############################################################################
 #   Generates magic box to encrypt and decrypt files

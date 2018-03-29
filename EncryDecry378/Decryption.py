@@ -23,10 +23,12 @@ def MyfileDecrypt(file_path):
     file_cipher = to_bytes(file_cipher)
     IV = to_bytes(IV)
     keys = to_bytes(keys)
+    tag = to_bytes(tag)
     #Decode the bytes
     file_cipher = base64.b64decode(file_cipher)
     IV = base64.b64decode(IV)
     keys = base64.b64decode(keys)
+    tag = base64.b64decode(tag)
     
     return file_cipher, IV, keys, file_extension, tag
 
@@ -135,11 +137,7 @@ def isValidFile(cipher_text, HMACKey, tag):
     h = hmac.HMAC(HMACKey, algorithm=hashes.SHA256(), backend=default_backend())
     h.update(cipher_text)
     hTag = h.finalize()
-    pdb.set_trace()
-    tag = bytes(tag, 'utf-8')
-    tag = to_bytes(tag)
-    tag = tag.split("\\")
-     
+    pdb.set_trace()     
 
     if(hTag==tag):
         return True

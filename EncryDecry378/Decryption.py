@@ -18,7 +18,6 @@ def MyfileDecrypt(file_path):
     IV = json_data[const.IV]
     keys = json_data[const.KEY]
     tag = json_data[const.TAG]
-    # pdb.set_trace
     #Byte-ify the following
     file_cipher = to_bytes(file_cipher)
     IV = to_bytes(IV)
@@ -63,6 +62,7 @@ def MyRSADecrypt(file_path, RSA_PublicKey_filepath):
                     algorithm=hashes.SHA256(),
                     label=None))
     HMAC, key = getHMAC(key)
+
     #Run my decrypt to decrypt the file and return the decrypted file
     if(isValidFile(file_cipher, HMAC, tag)):
         contents = MyDecrypt(file_cipher, key, IV)
@@ -137,7 +137,6 @@ def isValidFile(cipher_text, HMACKey, tag):
     h = hmac.HMAC(HMACKey, algorithm=hashes.SHA256(), backend=default_backend())
     h.update(cipher_text)
     hTag = h.finalize()
-    pdb.set_trace()     
 
     if(hTag==tag):
         return True

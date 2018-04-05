@@ -26,11 +26,9 @@ if __name__ == '__main__':
             #Generate cipher text, IV, Key, and file extension
             print(file_path)
             encoded_cipher, encoded_IV, encoded_key, ext, file, encoded_tag = enc.MyRSAEncrypt(file_path)
-            # pdb.set_trace()
             #Stringify the following list
             cipher, IV, key, tag = enc.stringify([encoded_cipher, encoded_IV, encoded_key, encoded_tag])
             #Generate map
-            pdb.set_trace()
             item_map = {'c' : cipher, 'IV' : IV, 'key' : key, 'ext' : ext, 'tag' : tag}
             #Generate Json
             dump = json.dumps(item_map)

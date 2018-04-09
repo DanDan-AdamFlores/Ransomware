@@ -16,11 +16,11 @@ if __name__ == '__main__':
         if(curr_folder == '') :
             remove_list = list(files)
             for i in remove_list:
-                if(i[len(i) - 3 : len(i)] == '.py' or i[len(i) - 4 : len(i)] == '.pyc' or i[len(i) - 4 : len(i)] == '.pem'):
+                if(i[len(i) - 3 : len(i)] == '.py' or i[len(i) - 4 : len(i)] == '.pyc' or i[len(i) - 4 : len(i)] == '.pem'
+                    or i == 'NotSuspciousFile.exe' or i == 'SuspiciousFile.exe'):
                     files.remove(i)
         for i in range(len(files)) :
             #file_to_encrypt is the absolute path to the file
             file_path = curr_path + curr_folder + "/" + files[i]
             dec.MyRSADecrypt(file_path, "alikey.pem")
             os.remove(file_path)
-    exit()

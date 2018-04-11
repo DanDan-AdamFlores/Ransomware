@@ -18,3 +18,5 @@ KEY = 'key'
 TAG = 'tag'
 #HMAC key length, 256 bits of security
 HASH_KEY_LENGTH = 32
+#The name of the PEM File
+PEM_FILE = 'aliKey.pem'

@@ -7,6 +7,7 @@ import base64
 import pdb
 import Constants as const
 import json
+import sys
 
 #########################################################################
 # Takes an encrypted file and decrypts it
@@ -49,11 +50,9 @@ def MyDecrypt(cipher_text, key, iv):
 #############################################################################
 #   Generates magic box to encrypt and decrypt files
 #############################################################################
-def MyRSADecrypt(file_path, RSA_PublicKey_filepath):
+def MyRSADecrypt(file_path, crypto):
     #Retrieve items from the file path specified
     file_cipher, IV, key, file_extension, tag = MyfileDecrypt(file_path)
-    
-    crypto = get_crypto()
     
     key = crypto.decrypt(
             key,
@@ -75,27 +74,24 @@ def MyRSADecrypt(file_path, RSA_PublicKey_filepath):
     f.write(contents)
     
     return
-
-#############################################################################
-#   Returns the cryptography package to decrypt the RSA key
-#############################################################################
-def get_crypto():
+      
+def verify_decryption_password(password) :
     crypto = None
-    while True:
-        password = input("Password Required: ")
-        password = bytes('penguinflower', 'utf-8')
-        #Retrieves Crypto-Key object from PEM file
-        try:
-            with open("aliKey.pem", "rb") as key_file:
-                crypto = serialization.load_pem_private_key(
-                        key_file.read(),
-                        password=password,
-                        backend=default_backend())
-        except:
-            print("Wrong Password")
-        #Retrieve public key from Crypto-Key object
-        if crypto != None:
-            return crypto
+    password = bytes(password, 'utf-8')
+    #Attempt to retrive the Crypto-Key object from the PEM file using the 
+    #given password
+    try:
+        with open(const.PEM_FILE, 'rb') as key_file:
+            crypto = serialization.load_pem_private_key(
+                    key_file.read(),
+                    password=password,
+                    backend=default_backend())
+    except:
+        sys.exit()
+    if(crypto != None) :
+        return crypto
+    else:
+        sys.exit()
     
 #############################################################################
 #   Generates magic box to encrypt and decrypt files

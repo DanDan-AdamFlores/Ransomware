@@ -10,7 +10,7 @@ import requests
 
 ############################################################################
 #   Posts public and private key to the server
-#   @params: pubKey -> Public Key, privKey -> PrivateKey
+#   @params: pubKey -> Public Key, privKey -> Private Key
 #   @return: AppKey to be able to retrieve the private key from server. 
 ############################################################################
 def post(pubKey, privKey):
@@ -22,12 +22,11 @@ def post(pubKey, privKey):
             break
     return appKey
 
-# TODO: Need to figure out how to serialize and deserialize crypto objects
 def get(appKey, pubKey):
     while True:
         r = requests.get(const.GET, data={'key1':appKey, 'key2':pubKey})
         if(r.status_code == 200):
-            break
+            break 
     r.encoding
     privKey = r.text
     return privKey
@@ -41,6 +40,11 @@ def authUser():
     appKey = r.text
     return appKey
 
+############################################################################
+#   Byte-ify crypto objects 
+#   @params: pubKey -> Public Key, privKey -> Private Key
+#   @return: serialized keys in bytes 
+############################################################################
 def getBytes(pubKey, privKey):
     privKey = privKey.private_bytes(
             encoding = serialization.Encoding.PEM,
@@ -48,9 +52,7 @@ def getBytes(pubKey, privKey):
             encryption_algorithm=serialization.BestAvailableEncryption(b"penguinflower"),
         )
     pubKey = pubKey.public_bytes(
-        encoding = serialization.Encoding.PEM,
-        format=serialization.PrivateFormat.TraditionalOpenSSL,
-        encryption_algorithm=serialization.BestAvailableEncryption(b"penguinflower"),
-    )
+            encoding=serialization.Encoding.PEM,
+            format=serialization.PublicFormat.SubjectPublicKeyInfo)
     return pubKey, privKey
 

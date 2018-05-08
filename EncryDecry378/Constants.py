@@ -16,6 +16,8 @@ IV = 'IV'
 KEY = 'key'
 #Index value for retrieving tag from Json file
 TAG = 'tag'
+#Index value for retrieving AppKey from Json file
+APPKEY = 'AppKey'
 #HMAC key length, 256 bits of security
 HASH_KEY_LENGTH = 32
 #The name of the PEM File

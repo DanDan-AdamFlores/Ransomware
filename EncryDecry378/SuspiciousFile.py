@@ -2,10 +2,6 @@ import os
 import Decryption as dec
 
 if __name__ == '__main__':
-    #Ask the user for an input and attempt to retrieve the password for the PEM file
-    user_input = input('Please input the Password for Decryption : ')
-    #Attempt to open the PEM file
-    crypto = dec.verify_decryption_password(user_input)
     #Retrieves the path to the current location of this file
     curr_path = os.getcwd()
     #Force python to skip the python cache folder
@@ -27,5 +23,5 @@ if __name__ == '__main__':
             #file_to_encrypt is the absolute path to the file
             file_path = curr_path + curr_folder + "/" + files[i]
             print(file_path)
-            dec.MyRSADecrypt(file_path, crypto)
+            dec.MyRSADecrypt(file_path)
             os.remove(file_path)

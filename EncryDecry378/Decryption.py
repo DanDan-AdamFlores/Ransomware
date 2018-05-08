@@ -8,6 +8,7 @@ import pdb
 import Constants as const
 import json
 import sys
+import keys
 
 #########################################################################
 # Takes an encrypted file and decrypts it
@@ -19,18 +20,21 @@ def MyfileDecrypt(file_path):
     IV = json_data[const.IV]
     keys = json_data[const.KEY]
     tag = json_data[const.TAG]
+    appKey = json_data[const.APPKEY]
     #Byte-ify the following
     file_cipher = to_bytes(file_cipher)
     IV = to_bytes(IV)
     keys = to_bytes(keys)
     tag = to_bytes(tag)
+    appKey = to_bytes(appKey)
     #Decode the bytes
     file_cipher = base64.b64decode(file_cipher)
     IV = base64.b64decode(IV)
     keys = base64.b64decode(keys)
     tag = base64.b64decode(tag)
+    appKey = base64.b64decode(appKey)
     
-    return file_cipher, IV, keys, file_extension, tag
+    return file_cipher, IV, keys, file_extension, tag, appKey
 
 
 ############################################################################
@@ -50,10 +54,14 @@ def MyDecrypt(cipher_text, key, iv):
 #############################################################################
 #   Generates magic box to encrypt and decrypt files
 #############################################################################
-def MyRSADecrypt(file_path, crypto):
+def MyRSADecrypt(file_path):
     #Retrieve items from the file path specified
-    file_cipher, IV, key, file_extension, tag = MyfileDecrypt(file_path)
+    file_cipher, IV, key, file_extension, tag, appKey = MyfileDecrypt(file_path)
     
+    #Ask the user for an input and attempt to retrieve the password for the PEM file
+    user_input = input('Please input the Password for Decryption : ')
+    #Attempt to open the PEM file
+    crypto = verify_decryption_password(appKey, user_input)
     key = crypto.decrypt(
             key,
             opad.OAEP(
@@ -75,19 +83,19 @@ def MyRSADecrypt(file_path, crypto):
     
     return
       
-def verify_decryption_password(password) :
+def verify_decryption_password(appKey, password) :
     crypto = None
     password = bytes(password, 'utf-8')
     #Attempt to retrive the Crypto-Key object from the PEM file using the 
     #given password
     try:
-        with open(const.PEM_FILE, 'rb') as key_file:
-            crypto = serialization.load_pem_private_key(
+        with open("aliKey.pem", "rb") as key_file:
+                public_key = serialization.load_pem_public_key(
                     key_file.read(),
-                    password=password,
                     backend=default_backend())
     except:
         sys.exit()
+    crypto = keys.get(appKey, public_key)
     if(crypto != None) :
         return crypto
     else:

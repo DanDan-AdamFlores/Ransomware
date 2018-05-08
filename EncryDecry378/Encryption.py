@@ -7,6 +7,7 @@ import base64
 import pdb
 import Constants as const
 import os
+import keys
 
 ##########################################################
 # Using a generated IV and predetermined key, a file is
@@ -99,7 +100,7 @@ def createCipher(iv, key):
     return cipher
 
 #############################################################################
-#Retrieves the private key from a PEM file
+# Load public key from disk
 #############################################################################
 def getPK():
     private_key = None
@@ -109,16 +110,16 @@ def getPK():
         # Retrieves Crypto-Key Object from PEM file
         try:
             with open("aliKey.pem", "rb") as key_file:
-                    private_key = serialization.load_pem_private_key(
+                    public_key = serialization.load_pem_public_key(
                         key_file.read(),
-                        password=password,
                         backend=default_backend())
         except:
             print("Bad password. Try again.")
         # Retrieve public key from Crypto-Key Object
-        if private_key != None:
-            pk = private_key.public_key()
-            return pk
+        # if private_key != None:
+        #     pk = private_key.public_key()
+        #     keys.post(pk, private_key)
+        return public_key
 
 #############################################################################
 #Given a file path, pads the file
@@ -170,7 +171,7 @@ def stringify(item_list):
         stringified_items.append(str(item_list[i]))
 
     #Returns the stringified items
-    return stringified_items[0], stringified_items[1], stringified_items[2], stringified_items[3]
+    return stringified_items[0], stringified_items[1], stringified_items[2], stringified_items[3], stringified_items[4]
 
 ##############################################################################
 #Divides the file_path into the file name and the extension associated with

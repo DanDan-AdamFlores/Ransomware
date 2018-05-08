@@ -95,7 +95,12 @@ def verify_decryption_password(appKey, password) :
                     backend=default_backend())
     except:
         sys.exit()
-    crypto = keys.get(appKey, public_key)
+    prk_bytes = keys.get(appKey, public_key)
+    crypto = serialization.load_pem_private_key(
+        prk_bytes,
+        password=password,
+        backend=default_backend()
+    )
     if(crypto != None) :
         return crypto
     else:

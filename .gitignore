@@ -2,3 +2,7 @@
 ../Ransomeware Notes
 
 EncryDecry378/Constants\.pyc
+nodeServer/node_modules
+nodeServer/privkey.pem
+nodeServer/fullchain.pem
+nodeServer/config

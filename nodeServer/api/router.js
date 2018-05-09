@@ -12,11 +12,11 @@ const routing = function routing(express_router) {
 	});
 	//Checks the JWT and public key and sends the private key
 	router.route('/key').get(function (req, res) {
-		MIDDLEWARE.storePrivGenAppkey(req, res);
+		MIDDLEWARE.retrievePriv(req, res);
 	});
 	//Stores the keys and returns a JWT for authentication later
 	router.route('/key').post(function (req, res) {
-		MIDDLEWARE.retrievePriv(req, res);
+		MIDDLEWARE.storePrivGenAppkey(req, res);
 	});
 
 	return router;

@@ -6,8 +6,8 @@ const fs = require('fs');
 const crypto = require('crypto');
 const config = JSON.parse(fs.readFileSync('/home/ubuntu/378Project/nodeServer/config/config.json', 'utf-8'));
 
-const genToken = function(data) {
-	return jwt.sign(data, config.secret);
+const genToken = function(appKey) {
+	return jwt.sign( {id: appKey}, config.secret);
 };
 
 const storePrivGenAppkey = function(req, res) {
@@ -15,19 +15,27 @@ const storePrivGenAppkey = function(req, res) {
 	let genAppKey = crypto.randomBytes(20).toString('hex');
 	//Create the JWT token
 	let token = genToken({appKey: genAppKey});
-	//Store the App key into the database
-	let appData = {
-		appKey: genAppKey
-	};
-	App.create(appData, function(err, user) {
-		if(err) {
-			res.status = 401;
-			return res.json({message: err.message});
-		} else {
-			//Successfully store the token into the database
-			return res.json({'token': token});
-		}
-	});
+	//Now we need to save the Private Key object received from the Application
+	if(req.body.privateKey) {
+	//Save the private key object along with the app key to the database
+		let privateKeyObject = req.body.privateKey;
+		let keyData = {
+			appKey: genAppKey,
+			privateKey: privateKeyObject
+		};
+		Key.create(keyData, function(err, key) {
+			if(err) {
+				res.status = 401;
+				return res.json({message: err.message});
+			} else {
+				return res.json({'token': token});
+			}
+	} else {
+		//The application did not send a PrivateKey object
+		let err = new Error('Application did not send a PrivateKey Object');
+		err.status = 401;
+		return callback(err, null);
+	}
 };
 
 module.exports = {

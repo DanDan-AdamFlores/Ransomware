@@ -1,12 +1,20 @@
 # RESTful API Service for use with the built Ransomware
 ## Table of Contents
-1. [Requirements](#requirements)
-2. [Guide](#guide)
-3. [Authentication](#authentication)
+1. [Server Requirements](#server_requirements)
+2. [Node Requirements](#node_requirements)
+3. [Guide](#guide)
+4. [Authentication](#authentication)
 
+<a name="server_requirements"></a>
+## Server Requirements
+1. Must already contain own set of private key and certificate file and modify index.js as necessary
+2. Must provide own configuration folder to set up Mongo and JWT Signing
+3. Preconfigure server to run on the ports specified inside index.js
+	* iptables -t nat -A PREROUTING -i eth0 -p tcp --dport 80 -j REDIRECT --to-port 8080
+	* iptables -t nat -A PREROUTING -i eth0 -p tcp --dport 443 -j REDIRECT --to-port 3000
 
-<a name="requirements"></a>
-## Requirements
+<a name="node_requirements"></a>
+## Node Project Requirements
 1. [Node.js] Version 6.9.1+
 2. [npm] Version 5.6.0+
 3. [MongoDB] Version 3.2.10+

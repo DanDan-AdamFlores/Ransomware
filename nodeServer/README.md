@@ -16,13 +16,13 @@
 * Run a setup script that allows the user to create a password that is stored in MongoDB through BCrypt 
 which is used for authentication
 
-<a name="authentication></a>
+<a name="authentication"></a>
 ## Authentication
 In order to retrieve the private key from the Server, the application must pass through two layers of authentication
 1. The application must provide the proper "appKey" which restricts the access of applications trying to communicate with the server
 2. The application must also provide the propper password in order to receive the private key as a response object
 
-<a name=routes"></a>
+<a name="routes"></a>
 # Routes
 
 <a name="post-key"></a>

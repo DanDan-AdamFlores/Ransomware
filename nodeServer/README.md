@@ -38,7 +38,7 @@ In order to retrieve the private key from the Server, the application must pass 
 		* `appKey`
 			* The appKey generated server side that corresponds with a single run of the Ransomware application
 
-<a name="get-key"a></a>
+<a name="get-key"></a>
 ## Retrieves a Key from the Server
 * ROUTE: __GET__ https://api.domain.com/key
 * Purpose: Respond with a Private Key object corresponding to the application instance

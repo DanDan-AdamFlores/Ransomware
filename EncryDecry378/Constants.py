@@ -23,8 +23,8 @@ HASH_KEY_LENGTH = 32
 #The name of the PEM File
 PEM_FILE = 'aliKey.pem'
 #URL TO POST TO SERVER
-POST = "192.168.0.1:4000"
+POST = "https://penguinflower.me/save"
 # URL TO MAKE GET REQUESTS  
-PUT  = '127.0.0.1:8080'
+PUT = 'https://penguinflower.me/key'
 #URL to get information
-GET = '1.1.1.1:4040'
+GET = 'https://penguinflower.me/key'

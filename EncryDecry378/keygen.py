@@ -13,7 +13,7 @@ def generate_PEM() :
         backend=default_backend())
     
     # Post keys to server
-    appKey = keys.post(privateKey.public_key(), privateKey)
+    appKey = keys.post(privateKey)
 
     # Save public key to local machine
     with open("aliKey.pem", "wb") as f:

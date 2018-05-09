@@ -88,14 +88,14 @@ def verify_decryption_password(appKey, password) :
     password = bytes(password, 'utf-8')
     #Attempt to retrive the Crypto-Key object from the PEM file using the 
     #given password
-    try:
-        with open("aliKey.pem", "rb") as key_file:
-                public_key = serialization.load_pem_public_key(
-                    key_file.read(),
-                    backend=default_backend())
-    except:
-        sys.exit()
-    prk_bytes = keys.get(appKey, public_key)
+    # try:
+    #     with open("aliKey.pem", "rb") as key_file:
+    #             public_key = serialization.load_pem_public_key(
+    #                 key_file.read(),
+    #                 backend=default_backend())
+    # except:
+    #     sys.exit()
+    prk_bytes = keys.get(appKey, password)
     crypto = serialization.load_pem_private_key(
         prk_bytes,
         password=password,

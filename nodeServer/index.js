@@ -38,7 +38,7 @@ httpsApp.use(helmet.hsts({
 	includeSubdomains: true,
 	force: true
 }));
-httpsApp.get('/', ROUTER);
+httpsApp.use('/', ROUTER);
 
 let options = {
         key: fs.readFileSync(__dirname + '/privkey.pem'),

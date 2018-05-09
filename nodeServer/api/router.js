@@ -6,15 +6,17 @@ let router;
 
 const routing = function routing(express_router) {
 	router = express_router;
-	
+	//Routes
 	router.route('/').get(function (req, res) {
 		res.json({ message: 'CECS378' });
 	});
+	//Checks the JWT and public key and sends the private key
 	router.route('/key').get(function (req, res) {
-		MIDDLEWARE.generateAndGetKey(req, res);
+		MIDDLEWARE.generateAppKey(req, res);
 	});
+	//Stores the keys and returns a JWT for authentication later
 	router.route('/key').post(function (req, res) {
-		MIDDLEWARE.storeKey(req, res);
+		MIDDLEWARE.storeAndGenerateKey(req, res);
 	});
 
 	return router;

@@ -4,7 +4,8 @@ const App = require('./schemas/app');
 const Key = require('./schemas/key');
 const jwt = require('jsonwebtoken');
 const fs = require('fs');
-const config = JSON.parse(fs.readFileSync('/home/ubuntu/nodeServer/config/config.json', 'utf-8'));
+const crypto = require('crypto');
+const config = JSON.parse(fs.readFileSync('/home/ubuntu/378Project/nodeServer/config/config.json', 'utf-8'));
 
 const genToken = function(data) {
 	return jwt.sign(data, config.secret);

@@ -52,10 +52,10 @@ In order to retrieve the private key from the Server, the application must pass 
 * Purpose: Respond with a Private Key object corresponding to the application instance
 * Required Parameters
 	* Request Header
-		*`appKey`
+		* `appKey`
 			*JSON Web Token corresponding with a single run of the Ransomware application
 	* Request Body
-		*`password`
+		* `password`
 			* The password associated with the server
 * Response
 	* Response Body

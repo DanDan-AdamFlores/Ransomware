@@ -7,7 +7,7 @@ const KeySchema = new mongoose.Schema({
 		unique: true,
 		required: true
 	},
-	privateKey = {
+	privateKey : {
 		type: Object,
 		required: true
 	}
@@ -25,6 +25,7 @@ KeySchema.statics.authentication = function(appKey, callback) {
 		}
 		//The app key exists, return the private Key object
 		return callback(null, key.privateKey);
+		});
 };
 
 const Key = mongoose.model('Key', KeySchema);

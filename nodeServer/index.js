@@ -4,6 +4,7 @@ const MONGOOSE = require('mongoose');
 const DB_CONFIG = require('./config/mongo');
 const EXPRESS = require('express');
 const ROUTES = require('./api/router');
+const BODY_PARSER = require('body-parser');
 const http = require('http');
 const https = require('https');
 const fs = require('fs');
@@ -30,7 +31,7 @@ let cipher =  ['ECDHE-ECDSA-AES256-GCM-SHA384',
 
 //Redirect Http connection to HTTPS
 httpApp.get('*', function(req, res, next) {
-	res.redirect('https://'+req.headers.host+req.url);
+	res.redirect('https://' + req.headers.host + req.url);
 });
 
 httpsApp.use(helmet.hsts({
@@ -38,6 +39,9 @@ httpsApp.use(helmet.hsts({
 	includeSubdomains: true,
 	force: true
 }));
+
+httpsApp.use(BODY_PARSER.urlencoded({ extended: true }));
+httpsApp.use(BODY_PARSER.json());
 httpsApp.use('/', ROUTER);
 
 let options = {

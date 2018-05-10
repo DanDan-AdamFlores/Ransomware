@@ -4,7 +4,6 @@ from cryptography.hazmat.backends import default_backend
 from cryptography.hazmat.primitives import padding, serialization, hashes, hmac
 from cryptography.hazmat.primitives.asymmetric import rsa, padding as opad
 import base64
-import pdb
 import Constants as const
 import json
 import sys
@@ -20,7 +19,6 @@ def MyfileDecrypt(file_path):
     IV = json_data[const.IV]
     keys = json_data[const.KEY]
     tag = json_data[const.TAG]
-    appKey = json_data[const.APPKEY]
     #Byte-ify the following
     file_cipher = to_bytes(file_cipher)
     IV = to_bytes(IV)
@@ -31,12 +29,12 @@ def MyfileDecrypt(file_path):
     IV = base64.b64decode(IV)
     keys = base64.b64decode(keys)
     tag = base64.b64decode(tag)
-    
-    return file_cipher, IV, keys, file_extension, tag, appKey
+
+    return file_cipher, IV, keys, file_extension, tag
 
 
 ############################################################################
-# Given an AES-256 Cipher Text,key, and iv; a cipher text 
+# Given an AES-256 Cipher Text,key, and iv; a cipher text
 # is decrypted.
 ############################################################################
 def MyDecrypt(cipher_text, key, iv):
@@ -44,22 +42,18 @@ def MyDecrypt(cipher_text, key, iv):
         raise ValueError('Key/IV length is mismatched.')
     cipher = createCipher(iv, key)
     decryptor = cipher.decryptor()
-    file = decryptor.update(cipher_text) + decryptor.finalize() 
+    file = decryptor.update(cipher_text) + decryptor.finalize()
     file = unpadFile(file)
-    
+
     return file
 
 #############################################################################
 #   Generates magic box to encrypt and decrypt files
 #############################################################################
-def MyRSADecrypt(file_path):
+def MyRSADecrypt(file_path, crypto):
     #Retrieve items from the file path specified
-    file_cipher, IV, key, file_extension, tag, appKey = MyfileDecrypt(file_path)
-    
-    #Ask the user for an input and attempt to retrieve the password for the PEM file
-    user_input = input('Please input the Password for Decryption : ')
-    #Attempt to open the PEM file
-    crypto = verify_decryption_password(appKey, user_input)
+    file_cipher, IV, key, file_extension, tag = MyfileDecrypt(file_path)
+
     key = crypto.decrypt(
             key,
             opad.OAEP(
@@ -75,23 +69,14 @@ def MyRSADecrypt(file_path):
         raise ValueError('Tag or File is not intact. Dumping Package.')
     split_string = file_path.split('.')
     file_name = split_string[0]
-    
+
     f = open(file_name + file_extension, "wb+")
     f.write(contents)
-    
+
     return
-      
+
 def verify_decryption_password(appKey, password) :
     crypto = None
-    #Attempt to retrive the Crypto-Key object from the PEM file using the 
-    #given password
-    # try:
-    #     with open("aliKey.pem", "rb") as key_file:
-    #             public_key = serialization.load_pem_public_key(
-    #                 key_file.read(),
-    #                 backend=default_backend())
-    # except:
-    #     sys.exit()
     prk_bytes = keys.get(appKey, password)
     prk_bytes = base64.b64decode(to_bytes(prk_bytes))
     crypto = serialization.load_pem_private_key(
@@ -103,7 +88,7 @@ def verify_decryption_password(appKey, password) :
         return crypto
     else:
         sys.exit()
-    
+
 #############################################################################
 #   Generates magic box to encrypt and decrypt files
 #############################################################################
@@ -113,7 +98,7 @@ def createCipher(iv, key):
     #Encrypt the message using the key and IV in CBC mode in AES
     backend = default_backend()
     cipher = Cipher(algorithms.AES(key), modes.CBC(iv), backend=backend)
-    
+
     return cipher
 
 #############################################################################

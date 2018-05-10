@@ -53,7 +53,7 @@ In order to retrieve the private key from the Server, the application must pass 
 * Required Parameters
 	* Request Header
 		* `appKey`
-			*JSON Web Token corresponding with a single run of the Ransomware application
+			* JSON Web Token corresponding with a single run of the Ransomware application
 	* Request Body
 		* `password`
 			* The password associated with the server

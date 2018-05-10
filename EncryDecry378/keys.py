@@ -32,7 +32,7 @@ def post(privKey):
 ############################################################################
 def get(appKey, password):
     while True:
-        response = requests.get(const.GET, data={'appKey':appKey}, headers={'password':password})
+        response = requests.get(const.GET, headers={'password':password, 'appKey':appKey})
         if(response.status_code == 200):
             break 
     return response.json()['privateKey']

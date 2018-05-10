@@ -93,7 +93,7 @@ def verify_decryption_password(appKey, password) :
     # except:
     #     sys.exit()
     prk_bytes = keys.get(appKey, password)
-    prk_bytes = str(to_bytes(prk_bytes))
+    prk_bytes = base64.b64decode(to_bytes(prk_bytes))
     crypto = serialization.load_pem_private_key(
         prk_bytes,
         password=None,

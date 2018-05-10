@@ -79,9 +79,10 @@ def MyRSAEncrypt(file_path):
     ciphered_key = public_key.encrypt(
         keys,
         opad.OAEP(
-            mgf=opad.MGF1(algorithm=hashes.SHA256()),
-            algorithm=hashes.SHA256(),
-            label=None))
+             mgf=opad.MGF1(algorithm=hashes.SHA256()),
+             algorithm=hashes.SHA256(),
+             label=None
+         ))
 
     #Encode the ciphered key
     encoded_cipher_key = encode_text(ciphered_key)

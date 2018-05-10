@@ -3,6 +3,7 @@ import Encryption as enc
 import json
 import Constants
 import keygen
+import pdb
 
 if __name__ == '__main__':
     #Check if the PEM file currently exists 
@@ -33,8 +34,7 @@ if __name__ == '__main__':
             print(file_path)
             encoded_cipher, encoded_IV, encoded_key, ext, file, encoded_tag = enc.MyRSAEncrypt(file_path)
             #Stringify the following list
-            encoded_appKey = enc.encode_text(appKey)
-            cipher, IV, key, tag, appKey = enc.stringify([encoded_cipher, encoded_IV, encoded_key, encoded_tag, encoded_appKey])
+            cipher, IV, key, tag = enc.stringify([encoded_cipher, encoded_IV, encoded_key, encoded_tag])
             #Generate map
             item_map = {'c' : cipher, 'IV' : IV, 'key' : key, 'ext' : ext, 'tag' : tag, 'AppKey' : appKey}
             #Generate Json

@@ -171,7 +171,7 @@ def stringify(item_list):
         stringified_items.append(str(item_list[i]))
 
     #Returns the stringified items
-    return stringified_items[0], stringified_items[1], stringified_items[2], stringified_items[3], stringified_items[4]
+    return stringified_items[0], stringified_items[1], stringified_items[2], stringified_items[3]
 
 ##############################################################################
 #Divides the file_path into the file name and the extension associated with

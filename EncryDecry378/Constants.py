@@ -18,12 +18,16 @@ KEY = 'key'
 TAG = 'tag'
 #Index value for retrieving AppKey from Json file
 APPKEY = 'AppKey'
+# Index value for retrieving Token from Server
+TOKEN = 'token'
+# Index value for retreiving PKEY from Server
+PRIVATEKEY = 'privateKey'
 #HMAC key length, 256 bits of security
 HASH_KEY_LENGTH = 32
 #The name of the PEM File
 PEM_FILE = 'aliKey.pem'
 #URL TO POST TO SERVER
-POST = "https://penguinflower.me/save"
+POST = 'https://penguinflower.me/key'
 # URL TO MAKE GET REQUESTS  
 PUT = 'https://penguinflower.me/key'
 #URL to get information

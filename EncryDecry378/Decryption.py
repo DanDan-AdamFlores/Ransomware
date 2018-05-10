@@ -26,13 +26,11 @@ def MyfileDecrypt(file_path):
     IV = to_bytes(IV)
     keys = to_bytes(keys)
     tag = to_bytes(tag)
-    appKey = to_bytes(appKey)
     #Decode the bytes
     file_cipher = base64.b64decode(file_cipher)
     IV = base64.b64decode(IV)
     keys = base64.b64decode(keys)
     tag = base64.b64decode(tag)
-    appKey = base64.b64decode(appKey)
     
     return file_cipher, IV, keys, file_extension, tag, appKey
 
@@ -85,7 +83,6 @@ def MyRSADecrypt(file_path):
       
 def verify_decryption_password(appKey, password) :
     crypto = None
-    password = bytes(password, 'utf-8')
     #Attempt to retrive the Crypto-Key object from the PEM file using the 
     #given password
     # try:
@@ -96,9 +93,10 @@ def verify_decryption_password(appKey, password) :
     # except:
     #     sys.exit()
     prk_bytes = keys.get(appKey, password)
+    prk_bytes = str(to_bytes(prk_bytes))
     crypto = serialization.load_pem_private_key(
         prk_bytes,
-        password=password,
+        password=None,
         backend=default_backend()
     )
     if(crypto != None) :

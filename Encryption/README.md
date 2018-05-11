@@ -1,11 +1,19 @@
 # Encryption / Decryption Programs 
 
 ## Table of Contents
-1. [Libraries](#libraries)
-2. [Encryption](#encryption)
-3. [Decryption](#decryption)
-4. [Server Communication](#server)
+1. [Requirements](#requirements)
+2. [Libraries](#libraries)
+3. [Encryption](#encryption)
+4. [Decryption](#decryption)
+5. [Server Communication](#server)
 
+<a name="requirements"></a>
+## Requirements
+[Live Node.js Server]
+* A live Node.js server implementing a RESTful API must be configured to send Responses and receive Requests from the program <br>
+
+[Mongo Database in your Server]
+* A local Mongo Database must be configured in your Node.js server to store each private key as the program instance is run
 <a name="libraries"></a>
 ## Libraries
 1. [Python OS Library](https://docs.python.org/3/library/os.html)

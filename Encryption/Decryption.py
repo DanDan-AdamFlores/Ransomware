@@ -95,7 +95,7 @@ def verify_decryption_password(appKey, password) :
 def createCipher(iv, key):
     if(len(key) != 32) :
         raise ValueError('Key length must be of size 32')
-    #Encrypt the message using the key and IV in CBC mode in AES
+    #Decrypt the message using the key and IV in CBC mode in AES
     backend = default_backend()
     cipher = Cipher(algorithms.AES(key), modes.CBC(iv), backend=backend)
 

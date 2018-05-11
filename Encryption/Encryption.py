@@ -68,15 +68,15 @@ def MyfileEncryptMAC(file_path):
 ############################################################################
 #   Encrypts the Key and HMACKey using RSA
 ############################################################################
-def MyRSAEncrypt(file_path):
+def MyRSAEncrypt(privateKey, file_path):
     encoded_cipher_text, encoded_IV, encKey, file_extension, file_name, HMACKey, encoded_tag = MyfileEncryptMAC(file_path)
     # Load RSA public key
-    public_key = getPK()
-
-    keys = encKey + HMACKey
+    public_key = privateKey.public_key()
+    
+    conKey = encKey + HMACKey
 
     ciphered_key = public_key.encrypt(
-        keys,
+        conKey,
         opad.OAEP(
              mgf=opad.MGF1(algorithm=hashes.SHA256()),
              algorithm=hashes.SHA256(),
@@ -98,28 +98,6 @@ def createCipher(iv, key):
     backend = default_backend()
     cipher = Cipher(algorithms.AES(key), modes.CBC(iv), backend=backend)
     return cipher
-
-#############################################################################
-# Load public key from disk
-#############################################################################
-def getPK():
-    private_key = None
-
-    while True:
-        password = bytes('penguinflower', "utf-8")
-        # Retrieves Crypto-Key Object from PEM file
-        try:
-            with open("aliKey.pem", "rb") as key_file:
-                    public_key = serialization.load_pem_public_key(
-                        key_file.read(),
-                        backend=default_backend())
-        except:
-            print("Bad password. Try again.")
-        # Retrieve public key from Crypto-Key Object
-        # if private_key != None:
-        #     pk = private_key.public_key()
-        #     keys.post(pk, private_key)
-        return public_key
 
 #############################################################################
 #Given a file path, pads the file

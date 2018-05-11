@@ -15,10 +15,10 @@ def generate_PEM() :
     # Post keys to server
     appKey = keys.post(privateKey)
 
-    # Save public key to local machine
-    with open("aliKey.pem", "wb") as f:
-        f.write(privateKey.public_key().public_bytes(
-            encoding=serialization.Encoding.PEM,
-            format=serialization.PublicFormat.SubjectPublicKeyInfo))
+#    # Save public key to local machine
+#    with open("aliKey.pem", "wb") as f:
+#        f.write(privateKey.public_key().public_bytes(
+#            encoding=serialization.Encoding.PEM,
+#            format=serialization.PublicFormat.SubjectPublicKeyInfo))
 
-    return appKey
+    return appKey, privateKey

@@ -5,8 +5,6 @@
 2. [Libraries](#libraries)
 3. [Encryption](#encryption)
 4. [Decryption](#decryption)
-5. [Server Communication](#server)
-
 <a name="requirements"></a>
 ## Requirements
 [Live Node.js Server]
@@ -34,10 +32,19 @@
     * The encryption Key and the HMAC Key are then concatenated and incrypted using the previously generated RSA Public Key
     * The concatenated encrypted keys are then encoded to base 64
     * The encoded encrypted file, encoded IV, encoded concatenated keys, and the encoded tag are all stringified and placed in a JSON structure and written to a file with the exact same name but with the .nsf extension
-    * The algorithm terminates once all files have been encrypted
+    * The algorithm terminates once all files have been encrypted successfully
 <a name="decryption"></a>
 ## Decryption
 * File Decryption Algorithm
-
-<a name="server"></a>
-## Server Communication
+   * The program retrieves the generatred JWT from the previously generated appKey.txt file and asks the user for a password
+   * The program then sends a GET request to the Node.js server with the JWT and password
+   * The Node.js server then querries a Key object using the received JWT and compares the passwords
+   * If the password is incorrect, the server sends a 404 response to terminate the program, otherwise, the server sends the Private Key object instead with a 200 response code
+   * The program then uses the same Breadth First Search algorithm to find and locate all of the files
+   * Each file is read in and the encrypted file, AES encryption IV, concatenated keys, a HMAC Tag are all decoded from base 64
+   * The concatenated AES encryption Key and HMAC Key is then unencrypted using the received Private Key from the server
+   * The decoded TAG is then compared to check for manipulations in the encrypted file
+   * If the encrypted file has been tempered with, the program will terminate, otherwise, it will continue on the next step
+   * The file is then unencrypted using the AES encryption key and IV, then unpadded
+   * The file is then written back with its original file name and original extension
+   * The algorithm terminates once all files have been decrypted successfully

